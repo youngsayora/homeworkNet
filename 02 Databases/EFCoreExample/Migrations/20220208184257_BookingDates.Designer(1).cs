@@ -3,6 +3,7 @@ using System;
 using EFCoreExample.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EFCoreExample.Migrations
 {
     [DbContext(typeof(BookingContext))]
-    partial class BookingContextModelSnapshot : ModelSnapshot
+    [Migration("20220208184257_BookingDates")]
+    partial class BookingDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +38,6 @@ namespace EFCoreExample.Migrations
                     b.Property<DateTime>("FromUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RoomId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("ToUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -49,29 +48,11 @@ namespace EFCoreExample.Migrations
 
                     b.HasIndex("FromUtc");
 
-                    b.HasIndex("RoomId");
-
                     b.HasIndex("ToUtc");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("EFCoreExample.DataAccess.Entity.Room", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("RoomName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("EFCoreExample.DataAccess.Entity.User", b =>
@@ -92,26 +73,13 @@ namespace EFCoreExample.Migrations
 
             modelBuilder.Entity("EFCoreExample.DataAccess.Entity.Booking", b =>
                 {
-                    b.HasOne("EFCoreExample.DataAccess.Entity.Room", "Room")
-                        .WithMany("Bookings")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EFCoreExample.DataAccess.Entity.User", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Room");
-
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EFCoreExample.DataAccess.Entity.Room", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("EFCoreExample.DataAccess.Entity.User", b =>

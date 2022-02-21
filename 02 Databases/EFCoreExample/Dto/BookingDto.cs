@@ -6,6 +6,7 @@ namespace EFCoreExample.Dto
 	public class BookingDto
 	{
 		public string Username { get; set; }
+		public string Roomname { get; set; }
 		public DateTime FromUtc { get; set; }
 		public DateTime ToUtc { get; set; }
 		public string Comment { get; set; }
@@ -28,7 +29,8 @@ namespace EFCoreExample.Dto
 				Comment = booking.Comment,
 				FromUtc = booking.FromUtc,
 				ToUtc = booking.ToUtc,
-				Username = booking.User.UserName
+				Username = booking.User.UserName,
+				Roomname = booking.Room.RoomName
 			};
 		}
 	}

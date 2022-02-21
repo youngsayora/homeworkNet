@@ -44,6 +44,12 @@ namespace EFCoreExample.Controllers
 			if (user is null)
 				return BadRequest($"User with name '{bookingDto.Username}' cannot be found");
 
+			Room room = await _bookingContext
+				.Rooms
+				.FirstOrDefaultAsync(u => u.RoomName == bookingDto.Roomname);
+			if (room is null)
+				return BadRequest($"User with name '{bookingDto.Roomname}' cannot be found");
+
 			Booking newBooking = bookingDto
 				.ToBooking(userId: user.Id);
 			var alreadyCreatedBooking = await _bookingContext
