@@ -11,10 +11,11 @@ namespace EFCoreExample.Dto
 		public DateTime ToUtc { get; set; }
 		public string Comment { get; set; }
 
-		public Booking ToBooking(int userId)
+		public Booking ToBooking(int userId, int roomID)
 		{
 			return new Booking
 			{
+				RoomId = roomID,
 				UserId = userId,
 				FromUtc = DateTime.SpecifyKind(FromUtc, DateTimeKind.Utc),
 				ToUtc = DateTime.SpecifyKind(ToUtc, DateTimeKind.Utc),

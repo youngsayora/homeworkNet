@@ -40,3 +40,8 @@ msbuild.wrn
 # Remove all local docker data
 docker-data/
 /03 LoggingAndConfiguration/LoggingAndConfiguration/appsettings.local.json
+02 Databases/EFCoreExample/EFCoreExample(1).csproj
+02 Databases/EFCoreExample/Migrations/20211220183832_InitialCreate.Designer(1).cs
+02 Databases/EFCoreExample/Migrations/20211220200220_Bookings.Designer(1).cs
+02 Databases/EFCoreExample/Migrations/20220208184257_BookingDates.Designer(1).cs
+02 Databases/EFCoreExample/Properties/launchSettings(1).json

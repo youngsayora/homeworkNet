@@ -20,6 +20,12 @@ namespace EFCoreExample.DataAccess
 				.IsRequired(true);
 
 			modelBuilder.Entity<Booking>()
+				.HasOne(x => x.Room)
+				.WithMany(u => u.Bookings)
+				.HasForeignKey(b => b.RoomId)
+				.IsRequired(true);
+
+			modelBuilder.Entity<Booking>()
 				.Property(b => b.FromUtc)
 				.IsRequired(true);
 
