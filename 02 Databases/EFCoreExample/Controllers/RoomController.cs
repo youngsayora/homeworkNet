@@ -46,12 +46,18 @@ namespace EFCoreExample.Controllers
 		[HttpGet]
 		public async Task<ActionResult<string[]>> GetAllRooms(DateTime getFromUtc, DateTime getToUtc)
 		{
-			List<int> freeRoomIds = await _bookingContext.Bookings
-				.Where(p => p.FromUtc >= getFromUtc || p.ToUtc <= getFromUtc)
+			List<int> busyRoomIds = await _bookingContext.Bookings
+				.Where(p => p.FromUtc <= getFromUtc
+				&& p.ToUtc >= getFromUtc
+				|| p.FromUtc <= getToUtc
+				&& p.ToUtc >= getToUtc
+				|| p.FromUtc == getFromUtc
+				&& p.ToUtc == getToUtc
+				)
 				.Select(u => u.RoomId)
 				.ToListAsync();
 			return await _bookingContext.Rooms
-				.Where(r => freeRoomIds.Contains(r.Id))
+				.Where(r => !busyRoomIds.Contains(r.Id))
 				.Select(u => u.RoomName)
 				.ToArrayAsync();
 
