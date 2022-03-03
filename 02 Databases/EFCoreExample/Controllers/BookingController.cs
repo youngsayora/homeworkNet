@@ -24,15 +24,18 @@ namespace EFCoreExample.Controllers
 		{
 			var bookings = await _bookingContext.Bookings
 				.Include(b => b.User)
+				.Include(b => b.Room)
 				.ToArrayAsync(cancellationToken);
 			return Ok(bookings.Select(b => BookingDto.FromBooking(b)));
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<BookingDto>> CreateBooking(BookingDto bookingDto)
+		public async Task<ActionResult<BookingDto>> CreateBooking([FromBody] BookingDto bookingDto)
 		{
 			if (string.IsNullOrEmpty(bookingDto.Username))
 				return BadRequest("Username cannot be empty");
+			if (string.IsNullOrEmpty(bookingDto.Roomname))
+				return BadRequest("Roomname cannot be empty");
 			if (bookingDto.FromUtc == default)
 				return BadRequest("FromUtc cannot be empty");
 			if (bookingDto.ToUtc == default)
@@ -44,8 +47,14 @@ namespace EFCoreExample.Controllers
 			if (user is null)
 				return BadRequest($"User with name '{bookingDto.Username}' cannot be found");
 
+			Room room = await _bookingContext
+				.Rooms
+				.FirstOrDefaultAsync(u => u.RoomName == bookingDto.Roomname);
+			if (room is null)
+				return BadRequest($"Room with name '{bookingDto.Roomname}' cannot be found");
+
 			Booking newBooking = bookingDto
-				.ToBooking(userId: user.Id);
+				.ToBooking(userId: user.Id, roomID: room.Id);
 			var alreadyCreatedBooking = await _bookingContext
 				.Bookings
 				.FirstOrDefaultAsync(b =>
@@ -54,7 +63,8 @@ namespace EFCoreExample.Controllers
 					|| b.FromUtc <= newBooking.ToUtc
 					&& b.ToUtc >= newBooking.ToUtc
 					|| b.FromUtc == newBooking.FromUtc
-					&& b.ToUtc == newBooking.ToUtc);
+					&& b.ToUtc == newBooking.ToUtc
+					&& b.RoomId == newBooking.RoomId);
 			if (alreadyCreatedBooking is not null)
 				return Conflict("Booking for this time has already been created");
 			if (newBooking.FromUtc < DateTime.UtcNow)

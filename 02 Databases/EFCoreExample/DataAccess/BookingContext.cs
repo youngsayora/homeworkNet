@@ -9,6 +9,7 @@ namespace EFCoreExample.DataAccess
 
 		public DbSet<User> Users { get; set; }
 		public DbSet<Booking> Bookings { get; set; }
+		public DbSet<Room> Rooms { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -16,6 +17,12 @@ namespace EFCoreExample.DataAccess
 				.HasOne(x => x.User)
 				.WithMany(u => u.Bookings)
 				.HasForeignKey(b => b.UserId)
+				.IsRequired(true);
+
+			modelBuilder.Entity<Booking>()
+				.HasOne(x => x.Room)
+				.WithMany(u => u.Bookings)
+				.HasForeignKey(b => b.RoomId)
 				.IsRequired(true);
 
 			modelBuilder.Entity<Booking>()
